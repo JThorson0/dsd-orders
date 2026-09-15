@@ -9,6 +9,15 @@ let DB = null;
 const live = () => !!DB;
 const $ = (sel) => document.querySelector(sel);
 
+// Register the service worker immediately and independently of Firebase:
+// installability ("Install app") and offline caching must not depend on
+// the data layer finishing first.
+if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+
 const esc = (s) =>
   String(s ?? "")
     .replace(/&/g, "&amp;")
@@ -984,13 +993,6 @@ async function boot() {
   render();
   tick();
   setInterval(tick, 30000);
-
-  // Offline support: cache the app shell for dead-signal stores.
-  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
-    });
-  }
 }
 
 document.addEventListener("DOMContentLoaded", boot);
