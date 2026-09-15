@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0e2a47">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.json">
+  <title>DSD Orders</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="cfg-banner" hidden>
+    <span id="cfg-banner-text"></span>
+  </div>
+
+  <header id="app-header">
+    <h1>DSD <span class="dot">Orders</span></h1>
+    <span id="cutoff-chip">Loading…</span>
+  </header>
+
+  <main>
+    <!-- STORES -->
+    <section id="view-stores">
+      <div class="store-switch">
+        <button id="store-prev" aria-label="Previous store">‹</button>
+        <div class="store-id">
+          <h2 id="store-name">…</h2>
+          <p id="store-sub"></p>
+        </div>
+        <button id="store-next" aria-label="Next store">›</button>
+      </div>
+
+      <div id="quickadd">
+        <input id="qa-input" type="text" placeholder="Type ccc 4 or a few letters"
+               autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go">
+        <div id="qa-suggestions"></div>
+        <div id="qa-recents"></div>
+      </div>
+
+      <p class="legend">*Non Bold is latest — <b>bold</b> is the last order, regular is today's order.</p>
+      <div id="store-sheet"></div>
+
+      <div class="store-actions">
+        <button class="btn ghost" id="copy-last-btn">Start today from last order</button>
+      </div>
+    </section>
+
+    <!-- MASTER LIST -->
+    <section id="view-master" hidden>
+      <div id="master-banner"></div>
+      <p id="master-summary"></p>
+      <div class="master-actions">
+        <button class="btn orange" id="copy-all-btn">Copy all as text</button>
+      </div>
+      <div id="master-list"></div>
+    </section>
+
+    <!-- OTS -->
+    <section id="view-ots" hidden>
+      <div id="ots-banner"></div>
+      <div id="ots-view-grid">
+        <p id="ots-submitted-line"></p>
+        <button class="btn" id="mark-submitted-btn"></button>
+        <button class="btn orange" id="start-entry-btn">Start step-through entry</button>
+        <button class="btn" id="rollover-btn"></button>
+        <p class="rollover-note">Rollover moves today's quantities to the last order and zeroes today. It never happens on its own — only when you tap the button twice.</p>
+      </div>
+    </section>
+
+    <!-- SETUP -->
+    <section id="view-setup" hidden>
+      <div class="setup-sec">
+        <h2>Products</h2>
+        <input type="text" id="setup-filter" placeholder="Filter products…" autocomplete="off">
+        <div class="backup-row" style="margin-bottom:8px">
+          <button class="btn orange" id="add-product-btn">+ Add product</button>
+        </div>
+        <div id="product-form" hidden>
+          <h3 id="pf-title">Add product</h3>
+          <label for="pf-name">Name</label>
+          <input type="text" id="pf-name" autocomplete="off">
+          <label for="pf-item">OTS item number</label>
+          <input type="text" id="pf-item" autocomplete="off" inputmode="numeric">
+          <label for="pf-cat">Category</label>
+          <input type="text" id="pf-cat" list="cat-list" autocomplete="off">
+          <datalist id="cat-list"></datalist>
+          <label for="pf-aliases">Invisible search keywords</label>
+          <input type="text" id="pf-aliases" autocomplete="off" autocapitalize="off">
+          <p class="hint">Never shown in the app — only used to find this product in quick-add. Example: <b>sscp</b></p>
+          <div class="form-btns">
+            <button id="pf-save">Save</button>
+            <button id="pf-cancel">Cancel</button>
+          </div>
+        </div>
+        <div id="product-list"></div>
+      </div>
+
+      <div class="setup-sec">
+        <h2>Stores</h2>
+        <div class="backup-row" style="margin-bottom:8px">
+          <button class="btn orange" id="add-store-btn">+ Add store</button>
+        </div>
+        <div id="store-form" hidden>
+          <h3 id="sf-title">Add store</h3>
+          <label for="sf-name">Name</label>
+          <input type="text" id="sf-name" autocomplete="off">
+          <label for="sf-short">Short label</label>
+          <input type="text" id="sf-short" autocomplete="off">
+          <label for="sf-chain">Chain</label>
+          <input type="text" id="sf-chain" autocomplete="off">
+          <div class="form-btns">
+            <button id="sf-save">Save</button>
+            <button id="sf-cancel">Cancel</button>
+          </div>
+        </div>
+        <div id="store-list"></div>
+      </div>
+
+      <div class="setup-sec">
+        <h2>Backup</h2>
+        <div class="backup-row">
+          <button class="btn" id="export-btn">Export JSON</button>
+          <button class="btn ghost" id="import-btn">Import JSON</button>
+          <input type="file" id="import-file" accept="application/json" hidden>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav id="bottomnav">
+    <button class="navbtn active" data-view="stores"><span class="ico">🏪</span>Stores</button>
+    <button class="navbtn" data-view="master"><span class="ico">📋</span>Master List</button>
+    <button class="navbtn" data-view="ots"><span class="ico">✅</span>OTS Entry</button>
+    <button class="navbtn" data-view="setup"><span class="ico">⚙️</span>Setup</button>
+  </nav>
+
+  <div id="ots-overlay" hidden>
+    <div class="ots-top">
+      <span id="ots-count"></span>
+      <button id="ots-close">Close ✕</button>
+    </div>
+    <div id="ots-name"></div>
+    <div class="ots-blocks">
+      <button class="ots-block" id="ots-num-block"></button>
+      <button class="ots-block" id="ots-qty-block"></button>
+    </div>
+    <div class="ots-nav">
+      <button id="ots-prev">‹ Back</button>
+      <button id="ots-next">Next ›</button>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
