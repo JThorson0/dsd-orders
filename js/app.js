@@ -13,9 +13,7 @@ const $ = (sel) => document.querySelector(sel);
 // installability ("Install app") and offline caching must not depend on
 // the data layer finishing first.
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
-  });
+  navigator.serviceWorker.register("./sw.js").catch(() => {});
 }
 
 const esc = (s) =>

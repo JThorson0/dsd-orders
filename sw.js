@@ -1,7 +1,7 @@
 // sw.js — simple offline cache for the app shell + Firebase CDN scripts,
 // so the app opens in dead-signal stores after the first visit.
 // Firestore's own IndexedDB persistence handles the data layer.
-const CACHE = "dsd-v3";
+const CACHE = "dsd-v4";
 const CORE = [
   "./",
   "./index.html",
